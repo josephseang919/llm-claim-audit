@@ -1,0 +1,52 @@
+[project]
+name = "llm-claim-audit"
+version = "0.1.0"
+description = "A sampler + sidecar SQLite + threshold-policy framework for auditing LLM-extracted claims against source material."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.11,<3.15"
+authors = [
+    { name = "WXYC" }
+]
+keywords = ["llm", "audit", "claim-verification", "quality"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "httpx>=0.27",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.6",
+]
+openai = ["openai>=1.0"]
+anthropic = ["anthropic>=0.30"]
+
+[project.scripts]
+llm-claim-audit = "llm_claim_audit.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llm_claim_audit"]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: requires a live LLM provider API key; deselected from default CI runs",
+]
+addopts = "-m 'not integration'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
