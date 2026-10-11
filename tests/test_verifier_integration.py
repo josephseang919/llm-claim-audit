@@ -21,7 +21,7 @@ from llm_claim_audit.verifier import VerificationResult
 def _prompt_templete(claim, source):
     return (
         f"Source material: {source}\n\n"
-        f:"Claim: {claim}\n\n"
+        f"Claim: {claim}\n\n"
         "Does the source material support this claim? "
         "Answer with exactly one word: YES or NO."
     )
