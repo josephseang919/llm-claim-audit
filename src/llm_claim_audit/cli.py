@@ -36,6 +36,9 @@ def build_parser() -> argparse.ArgumentParser:
 
 def run_campaign(config_path: Path) -> int:
     """Load config, build Sampler/Verifier/ThresholdPolicy, run"""
+    if str(Path.cwd()) not in sys.path:
+        sys.path.insert(0, str(Path.cwd()))  # allow relative imports from cwd
+
     with open(config_path, "rb") as f:
         config = tomllib.load(f)
 
