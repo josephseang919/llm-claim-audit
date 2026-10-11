@@ -11,7 +11,7 @@ from a corpus, structured data from digitized artifacts, summaries of
 records) eventually needs to answer: *how do we know these claims are still
 grounded, and how do we track that over time?*
 
-`llm-claim-audit` is the framework half of that answer: a **sampler** +
+`llm-claim-audit` can help: a **sampler** +
 **sidecar SQLite store** + **threshold policy**. It ships no built-in
 verifier prompts or claim shapes — those are consumer-supplied, because
 what counts as a "claim" and how to check it is domain-specific. What the
