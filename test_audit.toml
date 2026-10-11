@@ -1,0 +1,19 @@
+
+[sampler]
+population = "fixtures:get_claims"
+sample_size = 3
+strategy = "random"
+rng_seed = 1
+
+[verifier]
+client = "fixtures:FakeClient"
+model = "fake-model"
+prompt_template = "fixtures:build_prompt"
+parse_response = "fixtures:parse_response"
+
+[threshold]
+min_agreement_rate = 0.8
+alert_agreement_rate = 0.5
+
+[store]
+db_path = "test_audit.db"

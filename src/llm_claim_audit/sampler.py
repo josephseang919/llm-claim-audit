@@ -30,11 +30,6 @@ class Sampler:
     _extra: dict = field(default_factory=dict)
 
     def sample(self) -> Sequence[Any]:
-        """Draw a sample from the population according to `strategy`.
-
-        TODO: implement "random" (default), "stratified", "most_recent"
-        strategies. Raise ValueError on unknown strategy.
-        """
         population = list(self.population_fn())
         rng = random.Random(self.rng_seed)
         if self.strategy == "random":

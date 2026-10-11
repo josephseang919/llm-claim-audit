@@ -3,10 +3,11 @@
 Local-only, no hosted dashboards or telemetry (out of scope for v0 per the
 extract-llm-claim-audit-v0 epic).
 """
+from __future__ import annotations
+
 import sqlite3
 from datetime import datetime, timezone
 
-from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
@@ -33,12 +34,28 @@ class AuditStore:
             """
             CREATE TABLE IF NOT EXISTS campaigns (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                outcome TEXT NOT NULL
+                started_at TEXT NOT NULL,
+                sample_size INTEGER NOT NULL,
+                outcome TEXT NOT NULL,
+                agreement_rate REAL NOT NULL
             )
             """
         )
-        self.conn.commit()
+        self._conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS results (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                campaign_id INTEGER NOT NULL,
+                claim_repr TEXT NOT NULL,
+                grounded INTEGER NOT NULL,
+                confidence REAL,
+                rationale TEXT,
+                FOREIGN KEY (campaign_id) REFERENCES campaigns (id)
+            )
+            """
+        )
+        self._conn.commit()
+
     def record_campaign(
         self, results: Sequence[VerificationResult], outcome: AuditOutcome
     ) -> int:
@@ -48,6 +65,10 @@ class AuditStore:
         agreement_rate = grounded / total if total > 0 else 0.0
 
         cursor = self._conn.execute(
+            """
+            INSERT INTO campaigns (started_at, sample_size, outcome, agreement_rate)
+            VALUES (?, ?, ?, ?)
+            """,
             (datetime.now(timezone.utc).isoformat(), total, outcome.value, agreement_rate),
         )
         campaign_id = cursor.lastrowid
